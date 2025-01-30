@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Valentine's Day Greeting</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            background: #ffafbd;
+            background: radial-gradient(circle, #ffafbd 0%, #ffc3a0 100%);
+            overflow: hidden;
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .envelope-wrapper {
+            position: relative;
+            width: 500px; /* Increased width */
+            height: 350px; /* Increased height */
+        }
+
+        .envelope {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: #ff3860;
+            border-radius: 10px;
+            cursor: pointer;
+            overflow: hidden;
+            border: 2px solid #d32f4a; /* Border for the envelope */
+        }
+
+        .envelope-cover {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: #ff3860;
+            border-radius: 10px;
+            z-index: 2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            font-size: 1.2rem;
+            color: white;
+            transition: transform 0.8s ease-in-out;
+            transform-origin: top;
+            border: 2px solid #d32f4a; /* Border for the cover */
+        }
+
+        .envelope-cover:before {
+            content: '';
+            position: absolute;
+            top: -100px; /* Adjusted for larger envelope */
+            left: 0;
+            width: 0;
+            height: 0;
+            border-left: 250px solid transparent; /* Adjusted for larger envelope */
+            border-right: 250px solid transparent; /* Adjusted for larger envelope */
+            border-bottom: 100px solid #ff3860; /* Adjusted for larger envelope */
+            border-bottom-color: #d32f4a; /* Border color for the flap */
+        }
+
+        .envelope.open .envelope-cover {
+            transform: rotateX(180deg);
+        }
+
+        .message-card {
+            position: absolute;
+            width: 90%;
+            height: 90%;
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-sizing: border-box;
+            top: 100%; /* Start below the envelope */
+            left: 5%;
+            transition: top 0.8s ease-in-out;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start; /* Align content to the top */
+            align-items: flex-start; /* Align text to the left */
+            text-align: left; /* Align text to the left */
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+            overflow-y: auto; /* Allow scrolling for long messages */
+            border: 2px solid #d32f4a; /* Border for the message card */
+        }
+
+        .envelope.open .message-card {
+            top: 5%; /* Slide up into view */
+        }
+
+        .message-card h3 {
+            font-size: 2rem; /* Decreased font size */
+            color: #ff3860;
+            margin-bottom: 1rem;
+            margin-top: 20px; /* Added margin-top */
+        }
+
+        .message-card p {
+            font-size: 1.2rem; /* Decreased font size */
+            color: #333;
+            word-wrap: break-word; /* Wrap long messages */
+            max-width: 100%;
+        }
+
+        .message-card .sender {
+            font-size: 1rem;
+            color: #555;
+            align-self: flex-end; /* Align to the right */
+            margin-top: 10px;
+        }
+
+        .heart {
+            position: absolute;
+            color: #ff3860;
+            font-size: 2rem;
+            animation: float 6s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translate(0, 0);
+            }
+            25% {
+                transform: translate(20px, -20px);
+            }
+            50% {
+                transform: translate(-20px, 20px);
+            }
+            75% {
+                transform: translate(20px, 20px);
+            }
+            100% {
+                transform: translate(0, 0);
+            }
+        }
+
+        .config-panel {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+        }
+
+        .config-panel input,
+        .config-panel textarea {
+            margin-bottom: 1rem;
+            border: 1px solid #ff3860; /* 1px border */
+            border-radius: 5px;
+            width: 100%;
+            padding: 0.5rem;
+            transition: border-color 0.3s;
+        }
+
+        .config-panel input:focus,
+        .config-panel textarea:focus {
+            outline: none; /* Remove default focus outline */
+            border-color: #ff3860; /* Change border color on focus */
+            box-shadow: 0 0 5px rgba(255, 56, 96, 0.5); /* Add a subtle shadow */
+        }
+
+        .config-panel input:hover,
+        .config-panel textarea:hover {
+            border-color: #ff3860; /* Change border color on hover */
+        }
+
+        .config-panel button {
+            background: #ff3860;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            transition: transform 0.3s;
+            cursor: pointer;
+        }
+
+        .config-panel button:hover {
+            transform: scale(1.05);
+        }
+
+        #generatedLink {
+            margin-top: 1rem;
+        }
+
+        #generatedLink input {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #ff3860; /* 1px border */
+            border-radius: 5px;
+            transition: border-color 0.3s;
+        }
+
+        #generatedLink input:hover {
+            border-color: #ff3860; /* Change border color on hover */
+        }
+
+        .copy-link-button {
+            background: #ff3860;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-top: 0.5rem;
+            transition: transform 0.3s;
+        }
+
+        .copy-link-button:hover {
+            transform: scale(1.05);
+        }
+
+        .icon-selection {
+            display: flex;
+            justify-content: right;
+            gap: 10px;
+            margin-top:-20px;
+            margin-bottom: 5px;
+        }
+
+        .icon-selection span {
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .icon-selection span:hover {
+            transform: scale(1.2);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .visitor-counter {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 1rem;
+            color: black; /* Changed font color to black */
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .creator {
+            position: fixed;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.9rem;
+            color: black; /* Changed font color to black */
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <!-- Configuration Panel -->
+    <div class="config-panel" id="configPanel">
+        <h3>💌 Express Your Love with a Beautiful Valentine's Message 💌</h3>
+        <input type="text" id="inputName" placeholder="Recipient's Name" autofocus required>
+        <textarea id="inputMessage" placeholder="Your Personal Message (max 120 characters)" maxlength="120" rows="3" required></textarea>
+        <!-- Icon Selection -->
+        <div class="icon-selection">
+            <span onclick="addIcon('❤️')">❤️</span>
+            <span onclick="addIcon('💌')">💌</span>
+            <span onclick="addIcon('🌹')">🌹</span>
+            <span onclick="addIcon('🥰')">🥰</span>
+            <span onclick="addIcon('💘')">💘</span>
+            <span onclick="addIcon('💝')">💝</span>
+        </div>
+        <input type="text" id="inputSender" placeholder="Your Name (Sender) - Optional">
+        <button onclick="generateLink()">Create Greeting Card</button>
+        <div id="generatedLink" class="mt-3"></div>
+    </div>
+
+    <!-- Envelope and Message -->
+    <div class="envelope-wrapper hidden" id="envelopeWrapper">
+        <div class="envelope" id="envelope">
+            <div class="envelope-cover">
+                Click me to reveal the message ❤️
+            </div>
+            <div class="message-card">
+                <h3 id="recipientName" style="margin-top:1.7cm;"></h3>
+                <p id="mainMessage" style="font-size:16px;"></p>
+                <div class="sender" id="senderName"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Visitor Counter -->
+    <div class="visitor-counter">
+        Visitors: <span id="visitorCount">0</span>
+    </div>
+
+    <!-- Creator Credit -->
+    <div class="creator">
+        Created by Jameel A. Basher
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Function to check URL parameters and display the greeting
+        function showGreeting() {
+            const params = new URLSearchParams(window.location.search);
+            const recipientName = params.get('name');
+            const message = params.get('message');
+            const sender = params.get('sender');
+
+            if (recipientName && message) {
+                // Hide the config panel
+                document.getElementById('configPanel').style.display = 'none';
+                // Show the envelope
+                document.getElementById('envelopeWrapper').classList.remove('hidden');
+                // Display the recipient's name, message, and sender
+                document.getElementById('recipientName').textContent = `${recipientName},`;
+                document.getElementById('mainMessage').textContent = message;
+                document.getElementById('senderName').textContent = sender ? `From: ${sender}` : '';
+                // Create animated hearts
+                createHearts();
+            }
+        }
+
+        // Function to generate the shareable link
+        function generateLink() {
+            const name = encodeURIComponent(document.getElementById('inputName').value);
+            const message = encodeURIComponent(document.getElementById('inputMessage').value);
+            const sender = encodeURIComponent(document.getElementById('inputSender').value);
+            const currentUrl = window.location.href.split('?')[0];
+            const shareLink = `${currentUrl}?name=${name}&message=${message}${sender ? `&sender=${sender}` : ''}`;
+
+            document.getElementById('generatedLink').innerHTML = `
+                <p>Share this link with your valentine:</p>
+                <input type="text" id="shareLinkInput" value="${shareLink}" readonly>
+                <button class="copy-link-button" onclick="copyLink()">Copy Link</button>
+                <p class="mt-2">💝 Copy and send this link to your special someone! 💝</p>
+            `;
+        }
+
+        // Function to copy the generated link
+        function copyLink() {
+            const linkInput = document.getElementById('shareLinkInput');
+            linkInput.select();
+            document.execCommand('copy');
+            alert('Link copied to clipboard!');
+        }
+
+        // Function to add an icon to the textarea
+        function addIcon(icon) {
+            const textarea = document.getElementById('inputMessage');
+            textarea.value += icon;
+        }
+
+        // Function to create animated hearts
+        function createHearts() {
+            const numHearts = 20;
+            for (let i = 0; i < numHearts; i++) {
+                const heart = document.createElement('div');
+                heart.classList.add('heart');
+                heart.innerHTML = '❤️';
+                heart.style.left = `${Math.random() * 100}%`;
+                heart.style.top = `${Math.random() * 100}%`;
+                heart.style.animationDuration = `${Math.random() * 4 + 2}s`;
+                heart.style.fontSize = `${Math.random() * 30 + 20}px`;
+                document.body.appendChild(heart);
+            }
+        }
+
+        // Add click event to open the envelope
+        document.getElementById('envelope').addEventListener('click', function () {
+            this.classList.toggle('open');
+        });
+
+        // Visitor counter
+        let visitorCount = localStorage.getItem('visitorCount') || 0;
+        visitorCount++;
+        localStorage.setItem('visitorCount', visitorCount);
+        document.getElementById('visitorCount').textContent = visitorCount;
+
+        // Show greeting or config panel on page load
+        showGreeting();
+    </script>
+</body>
+</html>
